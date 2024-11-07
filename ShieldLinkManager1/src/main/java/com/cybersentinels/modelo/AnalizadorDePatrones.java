@@ -1,4 +1,4 @@
-package java.modelo;
+package com.cybersentinels.modelo;
 
 public class AnalizadorDePatrones {
 }
