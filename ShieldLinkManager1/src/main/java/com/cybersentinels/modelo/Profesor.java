@@ -1,21 +1,26 @@
 package com.cybersentinels.modelo;
 
-import java.util.Date;
-import java.util.List;
-
 public class Profesor extends Usuario {
+    private String departamento;
 
-    // Constructor
-    public Profesor(int id, String nombre, String apellido, String email, String nombreUsuario, String contraseña) {
-        super(id, nombre, apellido, email, nombreUsuario, contraseña, Rol.Profesor);
+    public Profesor(int id, String nombre, String usuario, String contrasena, String departamento) {
+        super(id, nombre, usuario, contrasena, "Profesor");
+        this.departamento = departamento;
     }
 
-    // Métodos específicos del Profesor
-    public void solicitarEquipoParaClase(Date fecha, java.sql.Time hora, String aula, List<Equipo> equipos) {
-        // Implementación para solicitar equipos para una clase
+    public String getDepartamento() {
+        return departamento;
     }
 
-    public void verEstadoSolicitudes() {
-        // Implementación para ver el estado de sus solicitudes
+    public void setDepartamento(String departamento) {
+        this.departamento = departamento;
+    }
+
+    public void gestionarPréstamos() {
+        // Lógica específica para gestionar préstamos como profesor
+    }
+
+    public void asignarTareas() {
+        // Lógica específica para asignar tareas relacionadas a herramientas
     }
 }

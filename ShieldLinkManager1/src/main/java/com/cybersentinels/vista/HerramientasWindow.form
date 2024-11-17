@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.cybersentinels.vista.HerramientasWindow">
+  <grid id="mainGrid" row-count="2" column-count="1" layout-manager="GridLayoutManager">
+    <margin top="10" left="10" bottom="10" right="10"/> <!-- Se incluyen márgenes para una presentación adecuada -->
+    <constraints>
+      <xy x="20" y="20" width="600" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <!-- Tabla de herramientas -->
+      <component id="tablaHerramientas" class="javax.swing.JTable" binding="tablaHerramientas">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <!-- Botones -->
+      <grid id="botonesGrid" row-count="1" column-count="3" layout-manager="GridLayoutManager">
+        <margin top="5" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <children>
+          <!-- Botón Agregar -->
+          <component id="btnAgregar" class="javax.swing.JButton" binding="btnAgregar">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Agregar"/>
+            </properties>
+          </component>
+          <!-- Botón Editar -->
+          <component id="btnEditar" class="javax.swing.JButton" binding="btnEditar">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Editar"/>
+            </properties>
+          </component>
+          <!-- Botón Eliminar -->
+          <component id="btnEliminar" class="javax.swing.JButton" binding="btnEliminar">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Eliminar"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

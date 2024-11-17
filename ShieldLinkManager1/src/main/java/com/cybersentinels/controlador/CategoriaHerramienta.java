@@ -1,46 +1,22 @@
 package com.cybersentinels.controlador;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CategoriaHerramienta {
-    private int id;
-    private String nombre;
-    private String descripcion;
+    private Map<String, String> categorias;
 
-    // Constructor vacío
     public CategoriaHerramienta() {
+        categorias = new HashMap<>();
+        categorias.put("Electrónica", "Herramientas electrónicas como multímetros y osciloscopios.");
+        categorias.put("Manual", "Herramientas manuales como destornilladores y martillos.");
     }
 
-    // Constructor con parámetros
-    public CategoriaHerramienta(int id, String nombre, String descripcion) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
+    public String obtenerDescripcionCategoria(String tipo) {
+        return categorias.getOrDefault(tipo, "Categoría no encontrada.");
     }
 
-    // Getters y Setters
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-    // Implementar el resto de getters y setters para nombre y descripcion
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void agregarCategoria(String tipo, String descripcion) {
+        categorias.put(tipo, descripcion);
     }
 }

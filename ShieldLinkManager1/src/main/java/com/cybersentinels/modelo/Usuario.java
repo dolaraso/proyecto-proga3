@@ -1,36 +1,20 @@
-package java.modelo;
+package com.cybersentinels.modelo;
 
-public abstract class Usuario {
+public class Usuario {
     private int id;
     private String nombre;
-    private String apellido;
-    private String email;
-    private String nombreUsuario;
-    private String contraseña;
-    private Rol rol;
+    private String usuario;
+    private String contrasena;
+    private String rol;
 
-    // Constructor
-    public Usuario(int id, String nombre, String apellido, String email, String nombreUsuario, String contraseña, Rol rol) {
+    public Usuario(int id, String nombre, String usuario, String contrasena, String rol) {
         this.id = id;
         this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.nombreUsuario = nombreUsuario;
-        this.contraseña = contraseña;
+        this.usuario = usuario;
+        this.contrasena = contrasena;
         this.rol = rol;
     }
 
-    // Métodos comunes
-    public boolean iniciarSesion() {
-        // Implementación del inicio de sesión
-        return true;
-    }
-
-    public void cerrarSesion() {
-        // Implementación del cierre de sesión
-    }
-
-    // Getters y Setters
     public int getId() {
         return id;
     }
@@ -47,43 +31,27 @@ public abstract class Usuario {
         this.nombre = nombre;
     }
 
-    public String getApellido() {
-        return apellido;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public String getEmail() {
-        return email;
+    public String getContrasena() {
+        return contrasena;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
-
-    public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-    }
-
-    public String getContraseña() {
-        return contraseña;
-    }
-
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
-    }
-
-    public Rol getRol() {
+    public String getRol() {
         return rol;
     }
 
-    public void setRol(Rol rol) {
+    public void setRol(String rol) {
         this.rol = rol;
     }
 }

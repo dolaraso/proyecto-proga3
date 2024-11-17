@@ -1,40 +1,21 @@
 package com.cybersentinels.modelo;
 
 public class CategoriaHerramienta {
-    private int id;
-    private String nombre;
+    private String tipo;
     private String descripcion;
 
-    // Constructor vacío
-    public CategoriaHerramienta() {
-    }
-
-    // Constructor con parámetros
-    public CategoriaHerramienta(int id, String nombre, String descripcion) {
-        this.id = id;
-        this.nombre = nombre;
+    public CategoriaHerramienta(String tipo, String descripcion) {
+        this.tipo = tipo;
         this.descripcion = descripcion;
     }
 
-    // Getters y Setters
-
-    public int getId() {
-        return id;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
-    // Implementar el resto de getters y setters para nombre y descripcion
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
 
     public String getDescripcion() {
         return descripcion;
