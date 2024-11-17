@@ -7,6 +7,10 @@ public class PrestamosWindow {
     private JButton btnSolicitarPrestamo;
     private JButton btnDevolverPrestamo;
     private JTable tablaPrestamos;
+    private JTable table1;
+    private JPanel panel1;
+    private JButton button1;
+    private JButton button2;
 
     public PrestamosWindow() {
         // Inicialización de eventos de botones

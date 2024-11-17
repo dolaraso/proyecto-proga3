@@ -10,7 +10,11 @@ public class LoginControlador {
         usuarioDAO = new UsuarioDAO();
     }
 
-    public Usuario iniciarSesion(String usuario, String contrasena) {
+    public Usuario validarCredenciales(String usuario, String contrasena) {
         return usuarioDAO.validarUsuario(usuario, contrasena);
+    }
+
+    public boolean registrarAcceso(int usuarioId, String rol) {
+        return usuarioDAO.registrarAcceso(usuarioId, rol);
     }
 }

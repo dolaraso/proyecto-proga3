@@ -5,10 +5,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainWindow {
+
     private JPanel panelPrincipal;
+    private  JLabel lblBienvenida;
     private JButton btnUsuarios;
     private JButton btnHerramientas;
     private JButton btnPrestamos;
+    private  JButton btnMantenimiento;
+    private  JButton btnSalir;
 
     public MainWindow() {
         btnUsuarios.addActionListener(new ActionListener() {

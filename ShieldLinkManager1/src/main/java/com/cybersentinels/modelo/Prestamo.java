@@ -1,6 +1,6 @@
 package com.cybersentinels.modelo;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Prestamo {
     private int id;
@@ -9,6 +9,7 @@ public class Prestamo {
     private Date fechaPrestamo;
     private String estado;
 
+    // Constructor
     public Prestamo(int id, int usuarioId, int herramientaId, Date fechaPrestamo, String estado) {
         this.id = id;
         this.usuarioId = usuarioId;
@@ -17,43 +18,27 @@ public class Prestamo {
         this.estado = estado;
     }
 
+    // Getters
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getUsuarioId() {
         return usuarioId;
     }
-
-    public void setUsuarioId(int usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public int getHerramientaId() {
         return herramientaId;
     }
 
-    public void setHerramientaId(int herramientaId) {
-        this.herramientaId = herramientaId;
-    }
-
     public Date getFechaPrestamo() {
         return fechaPrestamo;
     }
 
-    public void setFechaPrestamo(Date fechaPrestamo) {
-        this.fechaPrestamo = fechaPrestamo;
-    }
-
     public String getEstado() {
         return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
     }
 }

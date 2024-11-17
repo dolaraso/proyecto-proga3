@@ -1,66 +1,92 @@
 package com.cybersentinels.vista;
 
+import com.cybersentinels.controlador.LoginControlador;
+import com.cybersentinels.modelo.Usuario;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class LoginWindow {
-    private JPanel panelLogin;
-    private JComboBox<String> comboRoles;
+    private JComboBox<String> comboRoles; // Este campo parece faltar según el error
+    private JPanel panelPrincipal;
     private JTextField txtUsuario;
     private JPasswordField txtContrasena;
     private JButton btnIniciarSesion;
+    private JLabel lblUsuario;
+    private JLabel lblContrasena;
+
+    private LoginControlador loginControlador;
 
     public LoginWindow() {
-        btnIniciarSesion.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String rolSeleccionado = (String) comboRoles.getSelectedItem();
-                String usuario = txtUsuario.getText();
-                String contrasena = new String(txtContrasena.getPassword());
+        loginControlador = new LoginControlador();
 
-                // Validación de credenciales (Simulada)
-                if (validarCredenciales(usuario, contrasena, rolSeleccionado)) {
-                    abrirMenuPrincipal(rolSeleccionado);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.");
-                }
-            }
-        });
+        // Evento para el botón de iniciar sesión
+        btnIniciarSesion.addActionListener(e -> iniciarSesion());
     }
 
-    private boolean validarCredenciales(String usuario, String contrasena, String rol) {
-        // Aquí conectas la lógica de validación con la base de datos.
-        // Simulación de validación:
-        return "admin".equals(usuario) && "admin123".equals(contrasena) && "Administrador".equals(rol);
-    }
+    private void iniciarSesion() {
+        String usuario = txtUsuario.getText();
+        String contrasena = new String(txtContrasena.getPassword());
 
-    private void abrirMenuPrincipal(String rol) {
-        JFrame frame = new JFrame("Menú Principal - " + rol);
-        switch (rol) {
-            case "Administrador":
-                frame.setContentPane(new MenuAdministrador().getPanelAdministrador());
-                break;
-            case "Estudiante":
-                frame.setContentPane(new MenuEstudiante().getPanelEstudiante());
-                break;
-            case "Profesor":
-                frame.setContentPane(new MenuProfesor().getPanelProfesor());
-                break;
+        // Validar credenciales
+        Usuario usuarioAutenticado = loginControlador.validarCredenciales(usuario, contrasena);
+
+        if (usuarioAutenticado != null) {
+            JOptionPane.showMessageDialog(null, "Inicio de sesión exitoso.");
+            loginControlador.registrarAcceso(usuarioAutenticado.getId(), usuarioAutenticado.getRol());
+            redirigirMenu(usuarioAutenticado.getRol(), usuarioAutenticado.getId());
+        } else {
+            JOptionPane.showMessageDialog(null, "Credenciales incorrectas.");
         }
-        frame.pack();
-        frame.setVisible(true);
     }
 
-    public JPanel getPanelLogin() {
-        return panelLogin;
+    private void redirigirMenu(String rol, int usuarioId) {
+        JFrame frame = new JFrame();
+        switch (rol.toLowerCase()) {
+            case "admin":
+                MenuAdministrador menuAdmin = new MenuAdministrador();
+                frame.setContentPane(menuAdmin.getPanelPrincipal());
+                break;
+            case "profesor":
+                MenuProfesor menuProfesor = new MenuProfesor();
+                frame.setContentPane(menuProfesor.getPanelPrincipal());
+                break;
+            case "estudiante":
+                MenuEstudiante menuEstudiante = new MenuEstudiante(usuarioId);
+                frame.setContentPane(menuEstudiante.getPanelPrincipal());
+                break;
+            default:
+                JOptionPane.showMessageDialog(null, "Rol desconocido.");
+                return;
+        }
+
+        // Configuración del frame
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+        // Cerrar la ventana de login
+        SwingUtilities.getWindowAncestor(panelPrincipal).dispose();
+    }
+
+    public JPanel getPanelPrincipal() {
+        return panelPrincipal;
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Login");
-        frame.setContentPane(new LoginWindow().getPanelLogin());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        LoginWindow loginWindow = new LoginWindow();
+
+        if (loginWindow.getPanelPrincipal() != null) {
+            frame.setContentPane(loginWindow.getPanelPrincipal());
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        } else {
+            System.err.println("Error: panelPrincipal no está inicializado. Revisa la vinculación del formulario.");
+        }
     }
+
+
 }

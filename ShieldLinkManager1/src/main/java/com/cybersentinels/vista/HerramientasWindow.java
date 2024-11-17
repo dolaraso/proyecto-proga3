@@ -8,6 +8,11 @@ public class HerramientasWindow {
     private JButton btnEditar;
     private JButton btnEliminar;
     private JTable tablaHerramientas;
+    private JTable table1;
+    private JPanel panel1;
+    private JButton button1;
+    private JButton button2;
+    private JButton button3;
 
     public HerramientasWindow() {
         // Inicialización de eventos de botones

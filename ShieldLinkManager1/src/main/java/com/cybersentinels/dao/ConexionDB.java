@@ -11,13 +11,16 @@ public class ConexionDB {
 
     public static Connection conectar() {
         try {
-            Connection conexion = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Conexión exitosa a la base de datos.");
-            return conexion;
-        } catch (SQLException e) {
-            System.out.println("Error al conectar con la base de datos.");
+            Class.forName("com.mysql.cj.jdbc.Driver"); // Cargar el controlador
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error: Driver no encontrado.");
             e.printStackTrace();
-            return null;
+        } catch (SQLException e) {
+            System.err.println("Error al conectar con la base de datos.");
+            e.printStackTrace();
         }
+        return null;
     }
 }
+

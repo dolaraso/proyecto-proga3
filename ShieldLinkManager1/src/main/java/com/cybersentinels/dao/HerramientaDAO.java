@@ -100,14 +100,15 @@ public class HerramientaDAO {
         }
         return null;
     }
-
-    // Método para obtener herramientas por estado
+    // Método para obtener herramientas filtradas por estado
     public List<Herramienta> obtenerHerramientasPorEstado(String estado) {
         List<Herramienta> herramientas = new ArrayList<>();
         String sql = "SELECT * FROM herramientas WHERE estado = ?";
+
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, estado);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
                 herramientas.add(new Herramienta(
                         rs.getInt("id"),
@@ -120,43 +121,37 @@ public class HerramientaDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return herramientas;
     }
 
-    // Método adicional para buscar herramientas por tipo
-    public List<Herramienta> buscarHerramientasPorTipo(String tipo) {
-        List<Herramienta> herramientas = new ArrayList<>();
-        String sql = "SELECT * FROM herramientas WHERE tipo = ?";
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setString(1, tipo);
-            ResultSet rs = stmt.executeQuery();
+    // Método para obtener herramientas disponibles en formato de lista de nombres
+    public List<String> obtenerNombresHerramientasDisponibles() {
+        List<String> nombresHerramientas = new ArrayList<>();
+        String sql = "SELECT nombre FROM herramientas WHERE estado = 'disponible'";
+        try (Statement stmt = conexion.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                herramientas.add(new Herramienta(
-                        rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getString("descripcion"),
-                        rs.getString("estado"),
-                        rs.getString("tipo")
-                ));
+                nombresHerramientas.add(rs.getString("nombre"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return herramientas;
+        return nombresHerramientas;
     }
 
-    // Método para contar herramientas por estado
-    public int contarHerramientasPorEstado(String estado) {
-        String sql = "SELECT COUNT(*) AS total FROM herramientas WHERE estado = ?";
+    // Método para obtener el ID de una herramienta por su nombre
+    public int obtenerIdHerramientaPorNombre(String nombreHerramienta) {
+        String sql = "SELECT id FROM herramientas WHERE nombre = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setString(1, estado);
+            stmt.setString(1, nombreHerramienta);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt("total");
+                return rs.getInt("id");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 0;
+        return -1; // Retorna -1 si no se encuentra
     }
 }

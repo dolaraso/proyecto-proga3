@@ -16,8 +16,9 @@ public class Usuario {
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
+
 
     public void setId(int id) {
         this.id = id;

@@ -97,4 +97,17 @@ public class UsuarioDAO {
             return false;
         }
     }
+    public boolean registrarAcceso(int usuarioId, String rol) {
+        String sql = "INSERT INTO logs (usuario_id, rol, fecha_acceso) VALUES (?, ?, NOW())";
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, usuarioId);
+            stmt.setString(2, rol);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
