@@ -27,6 +27,9 @@ public class MenuAdministrador {
     private final ReporteDAO reporteDAO;
 
     public MenuAdministrador() {
+        // Verificar inicialización de componentes
+        verificarComponentes();
+
         // Inicializar DAOs
         usuarioDAO = new UsuarioDAO();
         herramientaDAO = new HerramientaDAO();
@@ -72,6 +75,28 @@ public class MenuAdministrador {
                 cerrarSesion();
             }
         });
+    }
+
+    /**
+     * Verifica que todos los componentes estén correctamente inicializados.
+     * Si algún botón no está vinculado, muestra un error para evitar NullPointerException.
+     */
+    private void verificarComponentes() {
+        if (btnGestionUsuarios == null) {
+            throw new IllegalStateException("El botón 'btnGestionUsuarios' no está inicializado. Revisa la vinculación en el archivo .form.");
+        }
+        if (btnGestionHerramientas == null) {
+            throw new IllegalStateException("El botón 'btnGestionHerramientas' no está inicializado. Revisa la vinculación en el archivo .form.");
+        }
+        if (btnGestionPrestamos == null) {
+            throw new IllegalStateException("El botón 'btnGestionPrestamos' no está inicializado. Revisa la vinculación en el archivo .form.");
+        }
+        if (btnGestionReportes == null) {
+            throw new IllegalStateException("El botón 'btnGestionReportes' no está inicializado. Revisa la vinculación en el archivo .form.");
+        }
+        if (btnSalir == null) {
+            throw new IllegalStateException("El botón 'btnSalir' no está inicializado. Revisa la vinculación en el archivo .form.");
+        }
     }
 
     private void gestionarUsuarios() {

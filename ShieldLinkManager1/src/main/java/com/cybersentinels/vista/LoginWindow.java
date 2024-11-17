@@ -6,53 +6,72 @@ import com.cybersentinels.modelo.Usuario;
 import javax.swing.*;
 
 public class LoginWindow {
-    private JComboBox<String> comboRoles; // Este campo parece faltar según el error
+    private JComboBox<String> comboRoles;
     private JPanel panelPrincipal;
     private JTextField txtUsuario;
     private JPasswordField txtContrasena;
     private JButton btnIniciarSesion;
-    private JLabel lblUsuario;
-    private JLabel lblContrasena;
 
-    private LoginControlador loginControlador;
+    private final LoginControlador loginControlador;
 
     public LoginWindow() {
         loginControlador = new LoginControlador();
 
-        // Evento para el botón de iniciar sesión
+        // Listener para Iniciar Sesión
         btnIniciarSesion.addActionListener(e -> iniciarSesion());
     }
 
     private void iniciarSesion() {
         String usuario = txtUsuario.getText();
         String contrasena = new String(txtContrasena.getPassword());
+        String rolSeleccionado = (String) comboRoles.getSelectedItem();
 
-        // Validar credenciales
+        if (usuario.isEmpty() || contrasena.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.");
+            return;
+        }
+
         Usuario usuarioAutenticado = loginControlador.validarCredenciales(usuario, contrasena);
 
-        if (usuarioAutenticado != null) {
+        if (usuarioAutenticado != null && rolSeleccionado != null && rolSeleccionado.equalsIgnoreCase(usuarioAutenticado.getRol())) {
             JOptionPane.showMessageDialog(null, "Inicio de sesión exitoso.");
-            loginControlador.registrarAcceso(usuarioAutenticado.getId(), usuarioAutenticado.getRol());
-            redirigirMenu(usuarioAutenticado.getRol(), usuarioAutenticado.getId());
+            redirigirMenu(rolSeleccionado.toLowerCase(), usuarioAutenticado.getId());
         } else {
-            JOptionPane.showMessageDialog(null, "Credenciales incorrectas.");
+            JOptionPane.showMessageDialog(null, "Credenciales incorrectas o rol no coincide.");
         }
     }
 
     private void redirigirMenu(String rol, int usuarioId) {
-        JFrame frame = new JFrame();
-        switch (rol.toLowerCase()) {
-            case "admin":
-                MenuAdministrador menuAdmin = new MenuAdministrador();
-                frame.setContentPane(menuAdmin.getPanelPrincipal());
+        JFrame frame = new JFrame("Menu Principal");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Asegura cerrar correctamente
+
+        switch (rol.toLowerCase().trim()) { // Maneja formatos de rol con .toLowerCase() y trim()
+            case "administrador":
+                try {
+                    MenuAdministrador menuAdmin = new MenuAdministrador();
+                    frame.setContentPane(menuAdmin.getPanelPrincipal());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Error al cargar el menú administrador: " + e.getMessage());
+                    return;
+                }
                 break;
             case "profesor":
-                MenuProfesor menuProfesor = new MenuProfesor();
-                frame.setContentPane(menuProfesor.getPanelPrincipal());
+                try {
+                    MenuProfesor menuProfesor = new MenuProfesor();
+                    frame.setContentPane(menuProfesor.getPanelPrincipal());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Error al cargar el menú profesor: " + e.getMessage());
+                    return;
+                }
                 break;
             case "estudiante":
-                MenuEstudiante menuEstudiante = new MenuEstudiante(usuarioId);
-                frame.setContentPane(menuEstudiante.getPanelPrincipal());
+                try {
+                    MenuEstudiante menuEstudiante = new MenuEstudiante(usuarioId);
+                    frame.setContentPane(menuEstudiante.getPanelPrincipal());
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Error al cargar el menú estudiante: " + e.getMessage());
+                    return;
+                }
                 break;
             default:
                 JOptionPane.showMessageDialog(null, "Rol desconocido.");
@@ -60,14 +79,15 @@ public class LoginWindow {
         }
 
         // Configuración del frame
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        frame.pack(); // Ajusta el tamaño de la ventana
+        frame.setLocationRelativeTo(null); // Centra la ventana
+        frame.setVisible(true); // Muestra la ventana
 
-        // Cerrar la ventana de login
+        // Cierra la ventana de login
         SwingUtilities.getWindowAncestor(panelPrincipal).dispose();
     }
+
+
 
     public JPanel getPanelPrincipal() {
         return panelPrincipal;
@@ -87,6 +107,4 @@ public class LoginWindow {
             System.err.println("Error: panelPrincipal no está inicializado. Revisa la vinculación del formulario.");
         }
     }
-
-
 }
