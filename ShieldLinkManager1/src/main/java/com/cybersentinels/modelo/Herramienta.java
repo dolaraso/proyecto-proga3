@@ -4,7 +4,7 @@ public class Herramienta {
     private int id;
     private String nombre;
     private String descripcion;
-    private String estado; // Disponible, Prestada, Mantenimiento
+    private String estado;
     private String tipo;
 
     public Herramienta(int id, String nombre, String descripcion, String estado, String tipo) {
@@ -13,6 +13,14 @@ public class Herramienta {
         this.descripcion = descripcion;
         this.estado = estado;
         this.tipo = tipo;
+    }
+
+    public Herramienta(int id, String nombre) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = "";
+        this.estado = "";
+        this.tipo = "";
     }
 
     public int getId() {

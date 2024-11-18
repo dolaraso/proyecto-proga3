@@ -1,44 +1,61 @@
 package com.cybersentinels.modelo;
 
-import java.util.Date;
-
 public class Prestamo {
     private int id;
-    private int usuarioId;
     private int herramientaId;
-    private Date fechaPrestamo;
+    private int usuarioId;
+    private String fechaPrestamo;
     private String estado;
 
-    // Constructor
-    public Prestamo(int id, int usuarioId, int herramientaId, Date fechaPrestamo, String estado) {
+    public Prestamo(int id, int herramientaId, int usuarioId, String fechaPrestamo, String estado) {
         this.id = id;
-        this.usuarioId = usuarioId;
         this.herramientaId = herramientaId;
+        this.usuarioId = usuarioId;
         this.fechaPrestamo = fechaPrestamo;
         this.estado = estado;
     }
 
-    // Getters
+    public Prestamo(int herramientaId, int usuarioId, String fechaPrestamo, String estado) {
+        this(0, herramientaId, usuarioId, fechaPrestamo, estado);
+    }
+
     public int getId() {
         return id;
     }
 
-    public int getUsuarioId() {
-        return usuarioId;
-    }
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getHerramientaId() {
         return herramientaId;
     }
 
-    public Date getFechaPrestamo() {
+    public void setHerramientaId(int herramientaId) {
+        this.herramientaId = herramientaId;
+    }
+
+    public int getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public String getFechaPrestamo() {
         return fechaPrestamo;
+    }
+
+    public void setFechaPrestamo(String fechaPrestamo) {
+        this.fechaPrestamo = fechaPrestamo;
     }
 
     public String getEstado() {
         return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }

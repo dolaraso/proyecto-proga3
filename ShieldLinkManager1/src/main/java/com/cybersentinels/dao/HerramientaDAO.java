@@ -100,15 +100,14 @@ public class HerramientaDAO {
         }
         return null;
     }
+
     // Método para obtener herramientas filtradas por estado
     public List<Herramienta> obtenerHerramientasPorEstado(String estado) {
         List<Herramienta> herramientas = new ArrayList<>();
         String sql = "SELECT * FROM herramientas WHERE estado = ?";
-
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, estado);
             ResultSet rs = stmt.executeQuery();
-
             while (rs.next()) {
                 herramientas.add(new Herramienta(
                         rs.getInt("id"),
@@ -121,7 +120,6 @@ public class HerramientaDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return herramientas;
     }
 
@@ -152,6 +150,21 @@ public class HerramientaDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return -1; // Retorna -1 si no se encuentra
+        return -1;
+    }
+
+    // Nuevo: Método para verificar si una herramienta está disponible por ID
+    public boolean estaDisponible(int id) {
+        String sql = "SELECT estado FROM herramientas WHERE id = ?";
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return "disponible".equalsIgnoreCase(rs.getString("estado"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -33,4 +33,8 @@ public class UsuarioControlador {
     public boolean eliminarUsuario(int id) {
         return usuarioDAO.eliminarUsuario(id);
     }
+
+    public Usuario obtenerUsuarioPorId(int id) {
+        return usuarioDAO.buscarUsuarioPorId(id);
+    }
 }

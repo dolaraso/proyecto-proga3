@@ -7,6 +7,7 @@ public class Usuario {
     private String contrasena;
     private String rol;
 
+    // Constructor
     public Usuario(int id, String nombre, String usuario, String contrasena, String rol) {
         this.id = id;
         this.nombre = nombre;
@@ -15,10 +16,10 @@ public class Usuario {
         this.rol = rol;
     }
 
+    // Getters y Setters
     public int getId() {
-        return this.id;
+        return id;
     }
-
 
     public void setId(int id) {
         this.id = id;
@@ -54,5 +55,16 @@ public class Usuario {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", usuario='" + usuario + '\'' +
+                ", contrasena='" + contrasena + '\'' +
+                ", rol='" + rol + '\'' +
+                '}';
     }
 }

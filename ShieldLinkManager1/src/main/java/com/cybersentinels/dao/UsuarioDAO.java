@@ -49,7 +49,25 @@ public class UsuarioDAO {
             return false;
         }
     }
-
+    public Usuario obtenerUsuarioPorId(int id) {
+        String sql = "SELECT * FROM usuarios WHERE id = ?";
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Usuario(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("usuario"),
+                        rs.getString("contrasena"),
+                        rs.getString("rol")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Retorna null si no encuentra el usuario
+    }
     public List<Usuario> obtenerUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT * FROM usuarios";
@@ -97,6 +115,7 @@ public class UsuarioDAO {
             return false;
         }
     }
+
     public boolean registrarAcceso(int usuarioId, String rol) {
         String sql = "INSERT INTO logs (usuario_id, rol, fecha_acceso) VALUES (?, ?, NOW())";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
@@ -110,4 +129,23 @@ public class UsuarioDAO {
         }
     }
 
+    public Usuario buscarUsuarioPorId(int id) {
+        String sql = "SELECT * FROM usuarios WHERE id = ?";
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Usuario(
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("usuario"),
+                        rs.getString("contrasena"),
+                        rs.getString("rol")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
