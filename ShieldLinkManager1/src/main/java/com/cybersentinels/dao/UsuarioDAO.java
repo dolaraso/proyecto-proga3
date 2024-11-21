@@ -26,8 +26,7 @@ public class UsuarioDAO {
                         rs.getString("nombre"),
                         rs.getString("usuario"),
                         rs.getString("contrasena"),
-                        rs.getString("rol")
-                );
+                        rs.getString("rol"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -36,6 +35,9 @@ public class UsuarioDAO {
     }
 
     public boolean agregarUsuario(Usuario usuario) {
+        if (usuario == null || usuario.getNombre() == null || usuario.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("El campo 'nombre' no puede estar vacío. Valor recibido: " + usuario);
+        }
         String sql = "INSERT INTO usuarios (nombre, usuario, contrasena, rol) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, usuario.getNombre());
@@ -49,6 +51,7 @@ public class UsuarioDAO {
             return false;
         }
     }
+
     public Usuario obtenerUsuarioPorId(int id) {
         String sql = "SELECT * FROM usuarios WHERE id = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
@@ -60,27 +63,26 @@ public class UsuarioDAO {
                         rs.getString("nombre"),
                         rs.getString("usuario"),
                         rs.getString("contrasena"),
-                        rs.getString("rol")
-                );
+                        rs.getString("rol"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null; // Retorna null si no encuentra el usuario
     }
+
     public List<Usuario> obtenerUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT * FROM usuarios";
         try (Statement stmt = conexion.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 usuarios.add(new Usuario(
                         rs.getInt("id"),
                         rs.getString("nombre"),
                         rs.getString("usuario"),
                         rs.getString("contrasena"),
-                        rs.getString("rol")
-                ));
+                        rs.getString("rol")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -140,12 +142,29 @@ public class UsuarioDAO {
                         rs.getString("nombre"),
                         rs.getString("usuario"),
                         rs.getString("contrasena"),
-                        rs.getString("rol")
-                );
+                        rs.getString("rol"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
+    public boolean modificarUsuario(Usuario usuario) {
+        String sql = "UPDATE usuarios SET nombre = ?, usuario = ?, contrasena = ?, rol = ? WHERE id = ?";
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setString(1, usuario.getNombre());
+            stmt.setString(2, usuario.getUsuario());
+            stmt.setString(3, usuario.getContrasena());
+            stmt.setString(4, usuario.getRol());
+            stmt.setInt(5, usuario.getId());
+
+            int filasActualizadas = stmt.executeUpdate();
+            return filasActualizadas > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 }

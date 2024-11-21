@@ -10,111 +10,190 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class GestionUsuariosWindow {
-    private JPanel panelPrincipal;
-    private JTable tableUsuarios;
-    private JButton btnAgregar;
-    private JButton btnModificar;
-
-    private final UsuarioDAO usuarioDAO;
+    private JPanel panelPrincipal; // Panel principal de la ventana
+    private JTable tableUsuarios; // Tabla para mostrar usuarios
+    private JButton btnAgregar; // Botón para agregar un nuevo usuario
+    private JButton btnModificar; // Botón para modificar un usuario existente
+    private JButton btnEliminar; // Botón para eliminar un usuario
+    private JTextField txtBuscarUsuario; // Campo de texto para buscar usuarios por ID
+    private JButton btnBuscar; // Botón para buscar usuarios por ID
+    private final UsuarioDAO usuarioDAO; // DAO para interactuar con la base de datos
 
     public GestionUsuariosWindow() {
-        usuarioDAO = new UsuarioDAO();
-        cargarUsuariosEnTabla();
+        usuarioDAO = new UsuarioDAO(); // Inicializa el DAO
+        inicializarComponentes(); // Configura los componentes de la interfaz
+        cargarUsuariosEnTabla(usuarioDAO.obtenerUsuarios()); // Carga los datos iniciales en la tabla
 
-        // Acción para agregar un usuario
+        // Acción para el botón "Agregar"
         btnAgregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                agregarUsuario();
+                abrirVentanaAgregarUsuario();
             }
         });
 
-        // Acción para modificar un usuario
+        // Acción para el botón "Modificar"
         btnModificar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                modificarUsuario();
+                abrirVentanaModificarUsuario();
+            }
+        });
+
+        // Acción para el botón "Eliminar"
+        btnEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                eliminarUsuario();
+            }
+        });
+
+        // Acción para el botón "Buscar"
+        btnBuscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buscarUsuarioPorId();
             }
         });
     }
 
     /**
-     * Carga los usuarios desde la base de datos en la tabla.
+     * Configura los componentes de la tabla de usuarios.
      */
-    private void cargarUsuariosEnTabla() {
-        List<Usuario> usuarios = usuarioDAO.obtenerUsuarios();
-        String[] columnNames = {"ID", "Nombre", "Usuario", "Rol"};
-        Object[][] data = new Object[usuarios.size()][4];
-
-        for (int i = 0; i < usuarios.size(); i++) {
-            Usuario usuario = usuarios.get(i);
-            data[i][0] = usuario.getId();
-            data[i][1] = usuario.getNombre();
-            data[i][2] = usuario.getUsuario();
-            data[i][3] = usuario.getRol();
-        }
-
-        tableUsuarios.setModel(new DefaultTableModel(data, columnNames));
+    private void inicializarComponentes() {
+        tableUsuarios.setModel(new DefaultTableModel(
+                new Object[][] {}, // Datos iniciales vacíos
+                new String[] { "ID", "Nombre", "Usuario", "Rol" } // Columnas de la tabla
+        ));
     }
 
     /**
-     * Permite agregar un nuevo usuario.
+     * Carga los usuarios obtenidos de la base de datos en la tabla.
+     *
+     * @param usuarios Lista de usuarios.
      */
-    private void agregarUsuario() {
-        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del usuario:");
-        String usuario = JOptionPane.showInputDialog("Ingrese el nombre de usuario:");
-        String contrasena = JOptionPane.showInputDialog("Ingrese la contraseña:");
-        String rol = JOptionPane.showInputDialog("Ingrese el rol del usuario:");
-        if (nombre != null && !nombre.isEmpty() &&
-                usuario != null && !usuario.isEmpty() &&
-                contrasena != null && !contrasena.isEmpty() &&
-                rol != null && !rol.isEmpty()) {
-            Usuario nuevoUsuario = new Usuario(0, nombre, usuario, contrasena, rol);
-            if (usuarioDAO.agregarUsuario(nuevoUsuario)) {
-                JOptionPane.showMessageDialog(null, "Usuario agregado correctamente.");
-                cargarUsuariosEnTabla();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al agregar el usuario.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Los campos no pueden estar vacíos.");
+    private void cargarUsuariosEnTabla(List<Usuario> usuarios) {
+        DefaultTableModel model = (DefaultTableModel) tableUsuarios.getModel();
+        model.setRowCount(0); // Limpia la tabla antes de cargar nuevos datos
+
+        for (Usuario usuario : usuarios) {
+            model.addRow(new Object[] { usuario.getId(), usuario.getNombre(), usuario.getUsuario(), usuario.getRol() });
         }
     }
 
     /**
-     * Permite modificar un usuario existente.
+     * Abre la ventana para agregar un nuevo usuario.
      */
-    private void modificarUsuario() {
-        int filaSeleccionada = tableUsuarios.getSelectedRow();
-        if (filaSeleccionada != -1) {
-            int id = (int) tableUsuarios.getValueAt(filaSeleccionada, 0);
-            String nuevoNombre = JOptionPane.showInputDialog("Ingrese el nuevo nombre del usuario:",
-                    tableUsuarios.getValueAt(filaSeleccionada, 1));
-            String nuevoRol = JOptionPane.showInputDialog("Ingrese el nuevo rol del usuario:",
-                    tableUsuarios.getValueAt(filaSeleccionada, 3));
+    private void abrirVentanaAgregarUsuario() {
+        JFrame frame = new JFrame("Nuevo Usuario");
+        AgregarUsuarioWindow agregarUsuarioWindow = new AgregarUsuarioWindow();
 
-            if (nuevoNombre != null && nuevoRol != null && !nuevoNombre.isEmpty() && !nuevoRol.isEmpty()) {
-                Usuario usuario = usuarioDAO.obtenerUsuarioPorId(id);
-                if (usuario != null) {
-                    usuario.setNombre(nuevoNombre);
-                    usuario.setRol(nuevoRol);
-                    if (usuarioDAO.actualizarUsuario(usuario)) {
-                        JOptionPane.showMessageDialog(null, "Usuario modificado correctamente.");
-                        cargarUsuariosEnTabla();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Error al modificar el usuario.");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "Usuario no encontrado.");
-                }
+        frame.setContentPane(agregarUsuarioWindow.getPanelPrincipal());
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.pack();
+        frame.setLocationRelativeTo(null); // Centra la ventana en la pantalla
+        frame.setVisible(true);
+
+        // Recarga la tabla cuando se cierra la ventana de agregar
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                cargarUsuariosEnTabla(usuarioDAO.obtenerUsuarios());
             }
-        } else {
+        });
+    }
+
+    /**
+     * Abre la ventana para modificar un usuario seleccionado.
+     */
+    private void abrirVentanaModificarUsuario() {
+        int selectedRow = tableUsuarios.getSelectedRow();
+
+        // Verifica si hay una fila seleccionada
+        if (selectedRow == -1) {
             JOptionPane.showMessageDialog(null, "Seleccione un usuario para modificar.");
+            return;
+        }
+
+        // Obtiene el ID del usuario seleccionado
+        int usuarioId = (int) tableUsuarios.getValueAt(selectedRow, 0);
+        Usuario usuario = usuarioDAO.obtenerUsuarioPorId(usuarioId);
+
+        if (usuario != null) {
+            JFrame frame = new JFrame("Editar Usuario");
+            ModificarUsuarioWindow modificarUsuarioWindow = new ModificarUsuarioWindow(usuario, usuarioDAO);
+
+            frame.setContentPane(modificarUsuarioWindow.getPanelPrincipal());
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.pack();
+            frame.setLocationRelativeTo(null); // Centra la ventana en la pantalla
+            frame.setVisible(true);
+
+            // Recarga la tabla cuando se cierra la ventana de modificación
+            frame.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    cargarUsuariosEnTabla(usuarioDAO.obtenerUsuarios());
+                }
+            });
+        } else {
+            JOptionPane.showMessageDialog(null, "No se pudo obtener la información del usuario seleccionado.");
         }
     }
 
     /**
-     * Retorna el panel principal para integrar con otras ventanas.
+     * Elimina un usuario seleccionado de la base de datos.
+     */
+    private void eliminarUsuario() {
+        int selectedRow = tableUsuarios.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(null, "Seleccione un usuario para eliminar.");
+            return;
+        }
+
+        int usuarioId = (int) tableUsuarios.getValueAt(selectedRow, 0);
+        int confirm = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar este usuario?");
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            if (usuarioDAO.eliminarUsuario(usuarioId)) {
+                JOptionPane.showMessageDialog(null, "Usuario eliminado con éxito.");
+                cargarUsuariosEnTabla(usuarioDAO.obtenerUsuarios());
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al eliminar el usuario.");
+            }
+        }
+    }
+
+    /**
+     * Busca un usuario por su ID y lo muestra en la tabla.
+     */
+    private void buscarUsuarioPorId() {
+        String idText = txtBuscarUsuario.getText().trim();
+
+        if (idText.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese un ID para buscar.");
+            return;
+        }
+
+        try {
+            int usuarioId = Integer.parseInt(idText); // Convertir el texto a entero
+            Usuario usuario = usuarioDAO.obtenerUsuarioPorId(usuarioId);
+
+            if (usuario != null) {
+                cargarUsuariosEnTabla(List.of(usuario)); // Muestra solo el usuario encontrado
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró ningún usuario con el ID proporcionado.");
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "El ID debe ser un número válido.");
+        }
+    }
+
+    /**
+     * Devuelve el panel principal de la ventana.
+     *
+     * @return JPanel principal.
      */
     public JPanel getPanelPrincipal() {
         return panelPrincipal;

@@ -4,10 +4,13 @@ public class Usuario {
     private int id;
     private String nombre;
     private String usuario;
-    private String contrasena;
+    private String contrasena; // Cambiado a `contrasena` para reflejar la base de datos
     private String rol;
 
-    // Constructor
+    // Constructor vacío
+    public Usuario() {}
+
+    // Constructor con parámetros
     public Usuario(int id, String nombre, String usuario, String contrasena, String rol) {
         this.id = id;
         this.nombre = nombre;
@@ -55,16 +58,5 @@ public class Usuario {
 
     public void setRol(String rol) {
         this.rol = rol;
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", usuario='" + usuario + '\'' +
-                ", contrasena='" + contrasena + '\'' +
-                ", rol='" + rol + '\'' +
-                '}';
     }
 }
