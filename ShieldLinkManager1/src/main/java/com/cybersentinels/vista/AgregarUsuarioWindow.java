@@ -26,7 +26,8 @@ public class AgregarUsuarioWindow {
 
     private void inicializarRoles() {
         comboRol.addItem("Administrador");
-        comboRol.addItem("Usuario");
+        comboRol.addItem("Profesor");
+        comboRol.addItem("Estudiante");
     }
 
     private void guardarUsuario() {

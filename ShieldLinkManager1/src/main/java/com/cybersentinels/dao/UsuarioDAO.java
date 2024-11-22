@@ -35,15 +35,14 @@ public class UsuarioDAO {
     }
 
     public boolean agregarUsuario(Usuario usuario) {
-        if (usuario == null || usuario.getNombre() == null || usuario.getNombre().trim().isEmpty()) {
-            throw new IllegalArgumentException("El campo 'nombre' no puede estar vacío. Valor recibido: " + usuario);
-        }
-        String sql = "INSERT INTO usuarios (nombre, usuario, contrasena, rol) VALUES (?, ?, ?, ?)";
+        int nuevoId = obtenerSiguienteId(); // Calcula el siguiente ID
+        String sql = "INSERT INTO usuarios (id, nombre, usuario, contrasena, rol) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setString(1, usuario.getNombre());
-            stmt.setString(2, usuario.getUsuario());
-            stmt.setString(3, usuario.getContrasena());
-            stmt.setString(4, usuario.getRol());
+            stmt.setInt(1, nuevoId); // Asigna el próximo ID manualmente
+            stmt.setString(2, usuario.getNombre());
+            stmt.setString(3, usuario.getUsuario());
+            stmt.setString(4, usuario.getContrasena());
+            stmt.setString(5, usuario.getRol());
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -51,6 +50,32 @@ public class UsuarioDAO {
             return false;
         }
     }
+
+
+    /**
+     * Calcula el siguiente ID disponible en la tabla usuarios.
+     *
+     * @return El próximo ID disponible.
+     */
+    private int obtenerSiguienteId() {
+        String sql = "SELECT id FROM usuarios ORDER BY id";
+        try (Statement stmt = conexion.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            int esperado = 1; // Primer ID esperado
+            while (rs.next()) {
+                if (rs.getInt("id") != esperado) {
+                    return esperado; // Retorna el primer ID faltante
+                }
+                esperado++;
+            }
+            return esperado; // Si no hay faltantes, retorna el siguiente número
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 1; // Por defecto, retorna 1 si no hay usuarios
+    }
+
+
 
     public Usuario obtenerUsuarioPorId(int id) {
         String sql = "SELECT * FROM usuarios WHERE id = ?";
@@ -107,16 +132,20 @@ public class UsuarioDAO {
     }
 
     public boolean eliminarUsuario(int id) {
-        String sql = "DELETE FROM usuarios WHERE id = ?";
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
+        String sqlEliminar = "DELETE FROM usuarios WHERE id = ?";
+        String sqlReiniciarAutoIncrement = "ALTER TABLE usuarios AUTO_INCREMENT = 1";
+        try (PreparedStatement stmtEliminar = conexion.prepareStatement(sqlEliminar);
+             Statement stmtReiniciar = conexion.createStatement()) {
+            stmtEliminar.setInt(1, id);
+            stmtEliminar.executeUpdate();
+            stmtReiniciar.executeUpdate(sqlReiniciarAutoIncrement); // Reinicia el AUTO_INCREMENT
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
+
 
     public boolean registrarAcceso(int usuarioId, String rol) {
         String sql = "INSERT INTO logs (usuario_id, rol, fecha_acceso) VALUES (?, ?, NOW())";

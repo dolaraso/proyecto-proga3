@@ -8,13 +8,9 @@ import javax.swing.*;
 public class ModificarUsuarioWindow {
 
     private JPanel panelPrincipal;
-    private JLabel lblNombre;
     private JTextField txtNombre;
-    private JLabel lblUsuario;
     private JTextField txtUsuario;
-    private JLabel lblContrasena;
     private JPasswordField txtContrasena;
-    private JLabel lblRol;
     private JComboBox<String> comboRol;
     private JButton btnGuardar;
     private JButton btnCancelar;
