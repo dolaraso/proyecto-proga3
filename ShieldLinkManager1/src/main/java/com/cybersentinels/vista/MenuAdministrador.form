@@ -6,6 +6,7 @@
       <xy x="59" y="8" width="1361" height="854"/>
     </constraints>
     <properties>
+      <background color="-1"/>
       <enabled value="true"/>
       <foreground color="-3"/>
     </properties>
@@ -298,7 +299,7 @@
               <background color="-1"/>
               <font name="Segoe UI" size="14" style="1"/>
               <foreground color="-1"/>
-              <text value="Administración/Control/Laboratorio"/>
+              <text value="Administración/GestionGeneral"/>
             </properties>
           </component>
           <vspacer id="c9f60">
