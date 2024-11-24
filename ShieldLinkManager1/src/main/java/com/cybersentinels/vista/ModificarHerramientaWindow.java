@@ -15,6 +15,8 @@ public class ModificarHerramientaWindow {
     private JComboBox<String> comboEstado;
     private JLabel Tipo;
     private JTextField txtTipo;
+    private JLabel Cantidad;
+    private JTextField txtCantidad;
     private JButton btnGuardar;
     private JButton btnCancelar;
 
@@ -37,6 +39,7 @@ public class ModificarHerramientaWindow {
         txtDescripcion.setText(herramienta.getDescripcion());
         comboEstado.setSelectedItem(herramienta.getEstado());
         txtTipo.setText(herramienta.getTipo());
+        txtCantidad.setText(String.valueOf(herramienta.getCantidad())); // Inicializa la cantidad
     }
 
     private void inicializarEstados() {
@@ -50,16 +53,32 @@ public class ModificarHerramientaWindow {
         String nuevaDescripcion = txtDescripcion.getText().trim();
         String nuevoEstado = (String) comboEstado.getSelectedItem();
         String nuevoTipo = txtTipo.getText().trim();
+        String cantidadStr = txtCantidad.getText().trim();
 
-        if (nuevoNombre.isEmpty() || nuevoEstado == null || nuevoTipo.isEmpty()) {
+        // Validaciones
+        if (nuevoNombre.isEmpty() || nuevoEstado == null || nuevoTipo.isEmpty() || cantidadStr.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos obligatorios.");
             return;
         }
 
+        int nuevaCantidad;
+        try {
+            nuevaCantidad = Integer.parseInt(cantidadStr);
+            if (nuevaCantidad < 0) {
+                JOptionPane.showMessageDialog(null, "La cantidad no puede ser negativa.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "La cantidad debe ser un número entero.");
+            return;
+        }
+
+        // Actualizar valores en la herramienta
         herramienta.setNombre(nuevoNombre);
         herramienta.setDescripcion(nuevaDescripcion);
         herramienta.setEstado(nuevoEstado);
         herramienta.setTipo(nuevoTipo);
+        herramienta.setCantidad(nuevaCantidad); // Actualiza la cantidad
 
         boolean actualizado = herramientaDAO.actualizarHerramienta(herramienta);
         if (actualizado) {

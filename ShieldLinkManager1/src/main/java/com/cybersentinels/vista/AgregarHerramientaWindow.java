@@ -6,15 +6,19 @@ import com.cybersentinels.modelo.Herramienta;
 import javax.swing.*;
 
 public class AgregarHerramientaWindow {
+
     private JPanel panelPrincipal;
-    private JTextField txtNombre;
-    private JLabel Descripción;
     private JLabel Nombre;
-    private JTextArea txtDescripcion;
+    private JLabel Descripción;
     private JLabel Estado;
-    private JComboBox<String> comboEstado;
     private JLabel Tipo;
+    private JLabel Cantidad;
+
+    private JTextField txtNombre;
+    private JTextArea txtDescripcion;
+    private JComboBox<String> comboEstado;
     private JTextField txtTipo;
+    private JTextField txtCantidad;
     private JButton btnGuardar;
     private JButton btnCancelar;
 
@@ -40,17 +44,23 @@ public class AgregarHerramientaWindow {
         String descripcion = txtDescripcion.getText().trim();
         String estado = (String) comboEstado.getSelectedItem();
         String tipo = txtTipo.getText().trim();
+        int cantidad;
 
-        if (nombre.isEmpty() || estado == null || tipo.isEmpty()) {
+        try {
+            cantidad = Integer.parseInt(txtCantidad.getText().trim());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "La cantidad debe ser un número válido.");
+            return;
+        }
+
+        if (nombre.isEmpty() || estado == null || tipo.isEmpty() || cantidad <= 0) {
             JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos obligatorios.");
             return;
         }
 
-        Herramienta herramienta = new Herramienta();
-        herramienta.setNombre(nombre);
-        herramienta.setDescripcion(descripcion);
-        herramienta.setEstado(estado);
-        herramienta.setTipo(tipo);
+        int siguienteId = herramientaDAO.getProximoId();
+
+        Herramienta herramienta = new Herramienta(siguienteId, nombre, descripcion, estado, tipo, cantidad);
 
         boolean guardado = herramientaDAO.agregarHerramienta(herramienta);
         if (guardado) {

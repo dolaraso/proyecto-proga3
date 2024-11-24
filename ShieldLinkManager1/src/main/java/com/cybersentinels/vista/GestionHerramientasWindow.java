@@ -40,7 +40,7 @@ public class GestionHerramientasWindow {
     private void inicializarTabla() {
         tableHerramientas.setModel(new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"ID", "Nombre", "Descripción", "Estado", "Tipo"}
+                new String[]{"ID", "Nombre", "Descripción", "Estado", "Tipo", "Cantidad"}
         ));
     }
 
@@ -54,14 +54,12 @@ public class GestionHerramientasWindow {
                     herramienta.getNombre(),
                     herramienta.getDescripcion(),
                     herramienta.getEstado(),
-                    herramienta.getTipo()
+                    herramienta.getTipo(),
+                    herramienta.getCantidad() // Mostrar cantidad
             });
         }
     }
 
-    /**
-     * Buscar herramienta por nombre desde el campo de texto
-     */
     private void buscarHerramientaPorNombre() {
         String nombre = txtBuscarNombre.getText().trim();
         if (nombre.isEmpty()) {
@@ -81,15 +79,13 @@ public class GestionHerramientasWindow {
                         herramienta.getNombre(),
                         herramienta.getDescripcion(),
                         herramienta.getEstado(),
-                        herramienta.getTipo()
+                        herramienta.getTipo(),
+                        herramienta.getCantidad() // Mostrar cantidad
                 });
             }
         }
     }
 
-    /**
-     * Seleccionar una herramienta desde la tabla
-     */
     private void seleccionarHerramienta() {
         int selectedRow = tableHerramientas.getSelectedRow();
         if (selectedRow == -1) {
@@ -107,9 +103,6 @@ public class GestionHerramientasWindow {
         }
     }
 
-    /**
-     * Cambiar el estado de la herramienta seleccionada a "Mantenimiento"
-     */
     private void cambiarEstadoMantenimiento() {
         if (herramientaSeleccionada == null) {
             JOptionPane.showMessageDialog(null, "Primero debe seleccionar una herramienta.");
@@ -129,16 +122,12 @@ public class GestionHerramientasWindow {
         herramientaSeleccionada = null; // Reiniciar selección
     }
 
-    /**
-     * Cambiar el estado de la herramienta seleccionada a "Disponible"
-     */
     private void levantarMantenimiento() {
         if (herramientaSeleccionada == null) {
             JOptionPane.showMessageDialog(null, "Primero debe seleccionar una herramienta.");
             return;
         }
 
-        // Verifica que la herramienta está en mantenimiento
         if (!"Mantenimiento".equalsIgnoreCase(herramientaSeleccionada.getEstado())) {
             JOptionPane.showMessageDialog(null, "La herramienta seleccionada no está en mantenimiento.");
             return;
@@ -182,8 +171,8 @@ public class GestionHerramientasWindow {
             return;
         }
 
-        String herramientaNombre = (String) tableHerramientas.getValueAt(selectedRow, 1);
-        Herramienta herramienta = herramientaDAO.obtenerHerramientaPorNombre(herramientaNombre);
+        int herramientaId = (int) tableHerramientas.getValueAt(selectedRow, 0);
+        Herramienta herramienta = herramientaDAO.obtenerHerramientaPorId(herramientaId);
 
         if (herramienta != null) {
             JFrame frame = new JFrame("Modificar Herramienta");
@@ -213,10 +202,10 @@ public class GestionHerramientasWindow {
             return;
         }
 
-        String herramientaNombre = (String) tableHerramientas.getValueAt(selectedRow, 1);
-        int confirm = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar la herramienta: " + herramientaNombre + "?");
+        int herramientaId = (int) tableHerramientas.getValueAt(selectedRow, 0);
+        int confirm = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar la herramienta?");
         if (confirm == JOptionPane.YES_OPTION) {
-            if (herramientaDAO.eliminarHerramientaPorNombre(herramientaNombre)) {
+            if (herramientaDAO.eliminarHerramienta(herramientaId)) {
                 JOptionPane.showMessageDialog(null, "Herramienta eliminada con éxito.");
                 cargarHerramientasEnTabla();
             } else {

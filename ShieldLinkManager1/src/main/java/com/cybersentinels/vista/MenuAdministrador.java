@@ -5,12 +5,9 @@ import com.cybersentinels.dao.PrestamoDAO;
 import com.cybersentinels.dao.ReporteDAO;
 import com.cybersentinels.dao.UsuarioDAO;
 import com.cybersentinels.modelo.Herramienta;
-import com.cybersentinels.modelo.Prestamo;
-import com.cybersentinels.modelo.Usuario;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class MenuAdministrador {
@@ -20,6 +17,7 @@ public class MenuAdministrador {
     private JButton btnGestionPrestamos;
     private JButton btnGestionReportes;
     private JButton btnSalir;
+    private JButton btnCreditos;
 
     private final UsuarioDAO usuarioDAO;
     private final HerramientaDAO herramientaDAO;
@@ -37,44 +35,22 @@ public class MenuAdministrador {
         reporteDAO = new ReporteDAO();
 
         // Acción para gestionar usuarios
-        btnGestionUsuarios.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                abrirGestionUsuarios();
-            }
-        });
+        btnGestionUsuarios.addActionListener(e -> abrirGestionUsuarios());
 
         // Acción para gestionar herramientas
-        btnGestionHerramientas.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                abrirGestionHerramientas();
-            }
-        });
+        btnGestionHerramientas.addActionListener(e -> abrirGestionHerramientas());
 
         // Acción para gestionar préstamos
-        btnGestionPrestamos.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                abrirGestionPrestamos();
-            }
-        });
+        btnGestionPrestamos.addActionListener(e -> abrirGestionPrestamos());
 
         // Acción para ver reportes
-        btnGestionReportes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                abrirGenerarReportes();
-            }
-        });
+        btnGestionReportes.addActionListener(e -> abrirGenerarReportes());
+
+        // Acción para el botón Créditos
+        btnCreditos.addActionListener(e -> abrirCreditosWindow());
 
         // Acción para cerrar sesión
-        btnSalir.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cerrarSesion();
-            }
-        });
+        btnSalir.addActionListener(e -> cerrarSesion());
     }
 
     private void verificarComponentes() {
@@ -92,6 +68,9 @@ public class MenuAdministrador {
         }
         if (btnSalir == null) {
             throw new IllegalStateException("El botón 'btnSalir' no está inicializado. Revisa la vinculación en el archivo .form.");
+        }
+        if (btnCreditos == null) {
+            throw new IllegalStateException("El botón 'btnCreditos' no está inicializado. Revisa la vinculación en el archivo .form.");
         }
     }
 
@@ -113,6 +92,9 @@ public class MenuAdministrador {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+
+        // Mostrar cantidad total de herramientas
+        mostrarCantidadHerramientas();
     }
 
     private void abrirGestionPrestamos() {
@@ -123,6 +105,16 @@ public class MenuAdministrador {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    private void abrirCreditosWindow() {
+        JFrame frame = new JFrame("Créditos");
+        CreditosWindow creditosWindow = new CreditosWindow(); // Crear instancia de la ventana Créditos
+        frame.setContentPane(creditosWindow.getPanelPrincipal()); // Establecer el panel principal
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Configurar el cierre de la ventana
+        frame.pack();
+        frame.setLocationRelativeTo(null); // Centrar ventana
+        frame.setVisible(true); // Mostrar la ventana
     }
 
     private void abrirGenerarReportes() {
@@ -147,6 +139,14 @@ public class MenuAdministrador {
         SwingUtilities.getWindowAncestor(panelPrincipal).dispose();
     }
 
+    private void mostrarCantidadHerramientas() {
+        List<Herramienta> herramientas = herramientaDAO.obtenerHerramientas();
+        int totalCantidad = herramientas.stream()
+                .mapToInt(Herramienta::getCantidad)
+                .sum();
+
+        JOptionPane.showMessageDialog(null, "Cantidad total de herramientas disponibles: " + totalCantidad);
+    }
 
     public JPanel getPanelPrincipal() {
         return panelPrincipal;

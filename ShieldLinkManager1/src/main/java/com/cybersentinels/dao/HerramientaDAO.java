@@ -13,17 +13,16 @@ public class HerramientaDAO {
         conexion = ConexionDB.conectar();
     }
 
-    // Método para agregar una nueva herramienta
-    // Método para agregar una nueva herramienta con ID personalizado
+    // Método para agregar una nueva herramienta con cantidad
     public boolean agregarHerramienta(Herramienta herramienta) {
-        String sql = "INSERT INTO herramientas (id, nombre, descripcion, estado, tipo) VALUES (?, ?, ?, ?, ?)";
-        int siguienteId = obtenerSiguienteId(); // Calcula el siguiente ID disponible
+        String sql = "INSERT INTO herramientas (id, nombre, descripcion, estado, tipo, cantidad) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setInt(1, siguienteId); // Asigna manualmente el ID
+            stmt.setInt(1, herramienta.getId());
             stmt.setString(2, herramienta.getNombre());
             stmt.setString(3, herramienta.getDescripcion());
             stmt.setString(4, herramienta.getEstado());
             stmt.setString(5, herramienta.getTipo());
+            stmt.setInt(6, herramienta.getCantidad()); // Manejo de cantidad
             stmt.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -31,9 +30,6 @@ public class HerramientaDAO {
             return false;
         }
     }
-
-
-
 
     // Método para obtener todas las herramientas
     public List<Herramienta> obtenerHerramientas() {
@@ -47,7 +43,8 @@ public class HerramientaDAO {
                         rs.getString("nombre"),
                         rs.getString("descripcion"),
                         rs.getString("estado"),
-                        rs.getString("tipo")
+                        rs.getString("tipo"),
+                        rs.getInt("cantidad") // Incluye cantidad
                 ));
             }
         } catch (SQLException e) {
@@ -69,7 +66,8 @@ public class HerramientaDAO {
                         rs.getString("nombre"),
                         rs.getString("descripcion"),
                         rs.getString("estado"),
-                        rs.getString("tipo")
+                        rs.getString("tipo"),
+                        rs.getInt("cantidad") // Incluye cantidad
                 ));
             }
         } catch (SQLException e) {
@@ -90,7 +88,8 @@ public class HerramientaDAO {
                         rs.getString("nombre"),
                         rs.getString("descripcion"),
                         rs.getString("estado"),
-                        rs.getString("tipo")
+                        rs.getString("tipo"),
+                        rs.getInt("cantidad") // Incluye cantidad
                 );
             }
         } catch (SQLException e) {
@@ -112,7 +111,8 @@ public class HerramientaDAO {
                         rs.getString("nombre"),
                         rs.getString("descripcion"),
                         rs.getString("estado"),
-                        rs.getString("tipo")
+                        rs.getString("tipo"),
+                        rs.getInt("cantidad") // Incluye cantidad
                 ));
             }
         } catch (SQLException e) {
@@ -163,7 +163,8 @@ public class HerramientaDAO {
                         rs.getString("nombre"),
                         rs.getString("descripcion"),
                         rs.getString("estado"),
-                        rs.getString("tipo")
+                        rs.getString("tipo"),
+                        rs.getInt("cantidad") // Incluye cantidad
                 );
             }
         } catch (SQLException e) {
@@ -184,28 +185,16 @@ public class HerramientaDAO {
         }
     }
 
-    // Método para eliminar una herramienta por su nombre
-    public boolean eliminarHerramientaPorNombre(String nombre) {
-        String sql = "DELETE FROM herramientas WHERE nombre = ?";
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setString(1, nombre);
-            int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     // Método para actualizar una herramienta existente
     public boolean actualizarHerramienta(Herramienta herramienta) {
-        String sql = "UPDATE herramientas SET nombre = ?, descripcion = ?, estado = ?, tipo = ? WHERE id = ?";
+        String sql = "UPDATE herramientas SET nombre = ?, descripcion = ?, estado = ?, tipo = ?, cantidad = ? WHERE id = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, herramienta.getNombre());
             stmt.setString(2, herramienta.getDescripcion());
             stmt.setString(3, herramienta.getEstado());
             stmt.setString(4, herramienta.getTipo());
-            stmt.setInt(5, herramienta.getId());
+            stmt.setInt(5, herramienta.getCantidad()); // Actualiza cantidad
+            stmt.setInt(6, herramienta.getId());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -213,22 +202,48 @@ public class HerramientaDAO {
         }
     }
 
-    // Método para verificar si una herramienta está disponible por su ID
+    // Método para verificar si una herramienta está disponible por cantidad
     public boolean estaDisponible(int id) {
-        String sql = "SELECT estado FROM herramientas WHERE id = ?";
+        String sql = "SELECT cantidad FROM herramientas WHERE id = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return "Disponible".equalsIgnoreCase(rs.getString("estado"));
+                return rs.getInt("cantidad") > 0; // Disponible si la cantidad es mayor a 0
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+
+    // Método para actualizar el estado de una herramienta
+    public boolean actualizarEstadoHerramienta(int id, String nuevoEstado) {
+        String sql = "UPDATE herramientas SET estado = ? WHERE id = ?";
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setString(1, nuevoEstado);
+            stmt.setInt(2, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Método para eliminar herramienta por nombre
+    public boolean eliminarHerramientaPorNombre(String nombre) {
+        String sql = "DELETE FROM herramientas WHERE nombre = ?";
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setString(1, nombre);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // Método para obtener el siguiente ID disponible
-    private int obtenerSiguienteId() {
+    protected int obtenerSiguienteId() {
         String sql = "SELECT id FROM herramientas ORDER BY id";
         try (Statement stmt = conexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -246,6 +261,7 @@ public class HerramientaDAO {
         }
         return 1; // Si algo falla, empieza desde 1
     }
-
-
+    public int getProximoId() {
+        return obtenerSiguienteId();
+    }
 }
