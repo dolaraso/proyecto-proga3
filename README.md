@@ -21,41 +21,66 @@ El proyecto está organizado en paquetes según su funcionalidad:
 3. **`controlador`:** Lógica de control para manejar eventos y lógica de negocio.
 4. **`util`:** Clases utilitarias como encriptación, validaciones y conversión de fechas.
 
-## Requisitos
-- **Java:** Versión 11 o superior.
-- **Maven:** Para gestionar dependencias y compilación.
-- **IDE recomendado:** IntelliJ IDEA o Eclipse.
-
 ## Instalación
-1. Clona el repositorio:
+
+1. **Navega al directorio del proyecto**:
    ```bash
-   git clone https://github.com/dolaraso/ShieldLinkManager1.git
-   Navega al directorio del proyecto:
+   cd ShieldLinkManager1
+   ```
 
-cd ShieldLinkManager1
+2. **Compila el proyecto con Maven**:
+   ```bash
+   mvn clean install
+   ```
 
-Compila el proyecto con Maven:
+3. **Ejecuta el archivo `.jar` generado**:
+   ```bash
+   java -jar target/ShieldLinkManager1.jar
+   ```
 
-mvn clean install
+## Uso
 
-Ejecuta el archivo jar generado:
+1. **Inicio de sesión**:
+   - Introduce tu usuario y contraseña.
+   - Selecciona el rol correspondiente:
+     - Administrador
+     - Estudiante
+     - Profesor
+     - Técnico
 
-    java -jar target/ShieldLinkManager1.jar
+2. **Gestión de recursos**:
+   - Desde el menú principal, accede a las opciones para gestionar:
+     - Usuarios
+     - Herramientas
+     - Préstamos
+     - Reportes
 
-Uso
+3. **Generación de reportes**:
+   - Ve a la sección de reportes.
+   - Selecciona la opción para descargar un archivo en formato PDF.
 
-    Inicio de sesión:
-        Introduce el usuario y contraseña.
-        Selecciona el rol correspondiente (Administrador, Estudiante, Profesor, Técnico).
-    Gestión de recursos:
-        Usa las opciones del menú principal para gestionar usuarios, herramientas, préstamos o reportes.
-    Generación de reportes:
-        Navega a la sección de reportes y selecciona la opción para descargar un PDF.
+## Dependencias
 
-Dependencias
+El archivo `pom.xml` incluye las siguientes dependencias principales:
 
-El archivo pom.xml incluye las siguientes dependencias principales:
+- **Swing:** Para el diseño de interfaces gráficas.
+- **Log4j:** Para el registro de actividades y errores.
+- **MySQL Connector:** Para la conexión con bases de datos MySQL.
 
-    Swing: Para el diseño de interfaces gráficas.
-    Log4j: Para el registro de actividades y errores.
-    MySQL Connector: Para la conexión con bases de datos MySQL.
+## Contribuciones
+
+1. Realiza un fork del repositorio.
+2. Crea una rama para tu contribución:
+   ```bash
+   git checkout -b feature/nueva-funcionalidad
+   ```
+3. Realiza tus cambios y envía un Pull Request.
+
+## Licencia
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+
+## Contacto
+
+Desarrollado por el equipo **CyberSentinels**. Para consultas, puedes enviar un correo a:  
+📧 soporte@cybersentinels.com
