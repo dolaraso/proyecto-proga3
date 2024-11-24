@@ -13,8 +13,16 @@ public class MantenimientoControlador {
     }
 
     public Herramienta obtenerHerramientaPorId(int id) {
-        return herramientaDAO.obtenerHerramientaPorId(id);
+        Herramienta herramienta = herramientaDAO.obtenerHerramientaPorId(id);
+        if (herramienta != null) {
+            // Lógica para manejar la herramienta encontrada
+            System.out.println("Herramienta encontrada: " + herramienta.getNombre());
+        } else {
+            System.out.println("Herramienta no encontrada.");
+        }
+        return herramienta;
     }
+
 
     public boolean actualizarHerramienta(Herramienta herramienta) {
         return herramientaDAO.actualizarHerramienta(herramienta);

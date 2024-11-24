@@ -7,6 +7,10 @@ public class Herramienta {
     private String estado;
     private String tipo;
 
+    // Constructor vacío
+    public Herramienta() {}
+
+    // Constructor completo
     public Herramienta(int id, String nombre, String descripcion, String estado, String tipo) {
         this.id = id;
         this.nombre = nombre;
@@ -15,14 +19,7 @@ public class Herramienta {
         this.tipo = tipo;
     }
 
-    public Herramienta(int id, String nombre) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = "";
-        this.estado = "";
-        this.tipo = "";
-    }
-
+    // Getters y Setters
     public int getId() {
         return id;
     }
@@ -61,5 +58,10 @@ public class Herramienta {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " (" + estado + ", " + tipo + ")";
     }
 }

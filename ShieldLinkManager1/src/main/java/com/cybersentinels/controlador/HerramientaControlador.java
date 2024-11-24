@@ -12,15 +12,15 @@ public class HerramientaControlador {
         herramientaDAO = new HerramientaDAO();
     }
 
-    public boolean agregarHerramienta(Herramienta herramienta) {
-        return herramientaDAO.agregarHerramienta(herramienta);
+    public int obtenerIdHerramientaPorNombre(String nombre) {
+        return herramientaDAO.obtenerIdHerramientaPorNombre(nombre);
     }
 
-    public List<Herramienta> obtenerHerramientas() {
+    public List<Herramienta> obtenerTodasLasHerramientas() {
         return herramientaDAO.obtenerHerramientas();
     }
 
-    public boolean eliminarHerramienta(int id) {
+    public boolean eliminarHerramientaPorId(int id) {
         return herramientaDAO.eliminarHerramienta(id);
     }
 }

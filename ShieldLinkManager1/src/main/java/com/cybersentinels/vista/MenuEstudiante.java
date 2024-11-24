@@ -1,129 +1,95 @@
 package com.cybersentinels.vista;
 
 import com.cybersentinels.dao.HerramientaDAO;
-import com.cybersentinels.dao.PrestamoDAO;
-import com.cybersentinels.modelo.Prestamo;
+import com.cybersentinels.modelo.Herramienta;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class MenuEstudiante {
     private JPanel panelPrincipal;
+    private JTable tableHerramientas;
+    private JButton btnBuscar;
+    private JTextField txtBuscarNombre;
+    private JButton btnMultas;
     private JButton btnSolicitarPrestamo;
-    private JButton btnVerPrestamos;
     private JButton btnSalir;
+    private JButton btnVerPrestamos;
 
     private final HerramientaDAO herramientaDAO;
-    private final PrestamoDAO prestamoDAO;
-    private final int estudianteId; // Este ID debe ser obtenido al iniciar sesión
+    private int usuarioId;
 
-    public MenuEstudiante(int estudianteId) {
-        this.estudianteId = estudianteId;
-        this.herramientaDAO = new HerramientaDAO();
-        this.prestamoDAO = new PrestamoDAO();
+    public MenuEstudiante(int usuarioId) {
+        this.usuarioId = usuarioId; // Guardamos el ID del usuario
+        herramientaDAO = new HerramientaDAO();
+        inicializarTabla();
+        cargarHerramientasEnTabla();
 
-
-        // Acción para solicitar un préstamo
-        btnSolicitarPrestamo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                solicitarPrestamo();
-            }
-        });
-
-        // Acción para ver préstamos
-        btnVerPrestamos.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                verMisPrestamos();
-            }
-        });
-
-        // Acción para cerrar sesión
-        btnSalir.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cerrarSesion();
-            }
-        });
+        // Acción del botón buscar
+        btnBuscar.addActionListener(e -> buscarHerramientaPorNombre());
+        btnSalir.addActionListener(e -> cerrarSesion());
     }
 
-    private void solicitarPrestamo() {
-        try {
-            // Obtener herramientas disponibles
-            List<String> herramientasDisponibles = herramientaDAO.obtenerNombresHerramientasDisponibles();
+    private void inicializarTabla() {
+        tableHerramientas.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"ID", "Nombre", "Descripción", "Estado", "Tipo"}
+        ));
+    }
 
-            if (herramientasDisponibles.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "No hay herramientas disponibles.");
-                return;
-            }
-
-            // Seleccionar herramienta
-            String herramientaSeleccionada = (String) JOptionPane.showInputDialog(
-                    null,
-                    "Seleccione una herramienta:",
-                    "Solicitar Préstamo",
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    herramientasDisponibles.toArray(),
-                    herramientasDisponibles.get(0)
-            );
-
-            if (herramientaSeleccionada != null) {
-                int herramientaId = herramientaDAO.obtenerIdHerramientaPorNombre(herramientaSeleccionada);
-                boolean exito = prestamoDAO.solicitarPrestamo(herramientaId, estudianteId);
-
-                if (exito) {
-                    JOptionPane.showMessageDialog(null, "Préstamo solicitado exitosamente.");
-                } else {
-                    JOptionPane.showMessageDialog(null, "Error al solicitar préstamo.");
-                }
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error al solicitar préstamo: " + ex.getMessage());
+    private void cargarHerramientasEnTabla() {
+        DefaultTableModel model = (DefaultTableModel) tableHerramientas.getModel();
+        model.setRowCount(0); // Limpiar la tabla
+        List<Herramienta> herramientas = herramientaDAO.obtenerHerramientas();
+        for (Herramienta herramienta : herramientas) {
+            model.addRow(new Object[]{
+                    herramienta.getId(),
+                    herramienta.getNombre(),
+                    herramienta.getDescripcion(),
+                    herramienta.getEstado(),
+                    herramienta.getTipo()
+            });
         }
     }
 
-    private void verMisPrestamos() {
-        try {
-            // Obtener lista de préstamos del estudiante
-            List<Prestamo> prestamos = prestamoDAO.obtenerPrestamosPorUsuario(estudianteId);
+    private void buscarHerramientaPorNombre() {
+        String nombre = txtBuscarNombre.getText().trim();
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, ingrese un nombre para buscar.");
+            return;
+        }
 
-            if (prestamos.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "No tienes préstamos registrados.");
-                return;
+        List<Herramienta> herramientas = herramientaDAO.buscarHerramientasPorNombre(nombre);
+        if (herramientas.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No se encontraron herramientas con el nombre: " + nombre);
+        } else {
+            DefaultTableModel model = (DefaultTableModel) tableHerramientas.getModel();
+            model.setRowCount(0); // Limpiar la tabla
+            for (Herramienta herramienta : herramientas) {
+                model.addRow(new Object[]{
+                        herramienta.getId(),
+                        herramienta.getNombre(),
+                        herramienta.getDescripcion(),
+                        herramienta.getEstado(),
+                        herramienta.getTipo()
+                });
             }
-
-            // Convertir la lista de objetos Prestamo a un formato legible
-            StringBuilder prestamosTexto = new StringBuilder();
-            for (Prestamo prestamo : prestamos) {
-                prestamosTexto.append("ID Préstamo: ").append(prestamo.getId())
-                        .append(", Herramienta ID: ").append(prestamo.getHerramientaId())
-                        .append(", Fecha: ").append(prestamo.getFechaPrestamo())
-                        .append(", Estado: ").append(prestamo.getEstado())
-                        .append("\n");
-            }
-
-            // Mostrar la lista de préstamos en un JOptionPane
-            JOptionPane.showMessageDialog(null, "Mis Préstamos:\n" + prestamosTexto.toString());
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "Error al consultar préstamos: " + ex.getMessage());
         }
     }
-
 
     private void cerrarSesion() {
-        JFrame frame = new JFrame("Login");
-        LoginWindow loginWindow = new LoginWindow();
-        frame.setContentPane(loginWindow.getPanelPrincipal());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+        int opcion = JOptionPane.showConfirmDialog(null, "¿Seguro que desea cerrar sesión?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (opcion == JOptionPane.YES_OPTION) {
+            JFrame frame = new JFrame("Login");
+            frame.setContentPane(new LoginWindow().getPanelPrincipal());
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
 
-        SwingUtilities.getWindowAncestor(panelPrincipal).dispose();
+            SwingUtilities.getWindowAncestor(panelPrincipal).dispose();
+        }
     }
 
     public JPanel getPanelPrincipal() {
