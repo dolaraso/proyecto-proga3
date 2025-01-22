@@ -118,14 +118,15 @@ public class MenuAdministrador {
     }
 
     private void abrirGenerarReportes() {
-        JFrame frame = new JFrame("Generar Reportes");
         GenerarReportesWindow generarReportesWindow = new GenerarReportesWindow();
-        frame.setContentPane(generarReportesWindow.getPanelPrincipal());
+        JFrame frame = new JFrame("Generar Reportes");
+        frame.setContentPane(generarReportesWindow.getPanelReportes()); // Cambiado a getPanelReportes()
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
+
 
     private void cerrarSesion() {
         JFrame frame = new JFrame("Login");
